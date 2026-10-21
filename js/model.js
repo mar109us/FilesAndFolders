@@ -1,6 +1,9 @@
 const model = {
     app: {
         currentId: null,
+    },
+    state: {
+      newContent: "",
     },    
     filesAndFolders: [
         {id: 1, name: 'Handlelister'},
