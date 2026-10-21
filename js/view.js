@@ -10,9 +10,14 @@ function updateView() {
 }
 
 function actions() {
-   return `
-      ${editField()}
-   `;
+   let currentId = model.app.currentId;
+   const currentFileOrFolder = model.filesAndFolders.find((f) => f.id == currentId);
+   console.log(currentFileOrFolder);
+   if (currentFileOrFolder === undefined) return `${editField()}`;
+   if (currentFileOrFolder) {
+      if (!currentFileOrFolder.hasOwnProperty("content")) return `${editField()}`;
+      else return ``;
+   }
 }
 
 function editField() {
@@ -37,23 +42,38 @@ function editField() {
 }
 
 function createFolder() {
+   if (model.state.newContent === "") return;
    const currentId = model.app.currentId;
-   const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
-   model.state.newContent = currentFile.content;
-   select(currentFile.parentId);
+   console.log(currentId);
+   console.log(model.filesAndFolders);
+   model.filesAndFolders.push({
+      id: model.filesAndFolders.at(-1).id + 1,
+      name: model.state.newContent,
+      parentId: currentId,
+   });
+   cancelCreate();
 }
 
 function createFile() {
-
+   if (model.state.newContent === "") return;
+   const currentId = model.app.currentId;
+   console.log(currentId);
+   console.log(model.filesAndFolders);
+   model.filesAndFolders.push({
+      id: model.filesAndFolders.at(-1).id + 1,
+      name: model.state.newContent,
+      parentId: currentId,
+      content: "",
+   });
+   cancelCreate();
 }
 
 function cancelCreate() {
-   model.state.newContent = ""
+   model.state.newContent = "";
    model.state.newFile.active = false;
    model.state.newFolder.active = false;
-   updateView()
+   updateView();
 }
-
 
 function newFolder() {
    model.state.newFolder.active = !model.state.newFolder.active;
@@ -119,6 +139,7 @@ function createEditFileHtml() {
         <br/>
         <button onclick="saveFile()">Lagre</button>
         <button onclick="cancelEdit()">Avbryt</button>
+        <button onclick="deleteFile()">Slett</button>
     `;
 }
 
@@ -133,5 +154,25 @@ function cancelEdit() {
    const currentId = model.app.currentId;
    const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
    model.state.newContent = currentFile.content;
+   select(currentFile.parentId);
+}
+
+function deleteFile() {
+   const currentId = model.app.currentId;
+   const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
+   console.log(currentFile);
+   const test = model.filesAndFolders.filter((item) => item !== currentFile);
+   console.log(test);
+   model.filesAndFolders = test;
+   select(currentFile.parentId);
+}
+
+function deleteFolder() {
+   const currentId = model.app.currentId;
+   const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
+   console.log(currentFile);
+   const test = model.filesAndFolders.filter((item) => item !== currentFile);
+   console.log(test);
+   model.filesAndFolders = test;
    select(currentFile.parentId);
 }
