@@ -19,22 +19,41 @@ function editField() {
    if (model.state.newFolder.active) {
       return `
       <button onclick="newFolder()">Ny mappe</button><br/>
-      <input type="text"></input><br/>
+      <input oninput="model.state.newContent = this.value" type="text"></input><br/>
       <button onclick="createFolder()">Lagre</button>
-      <button onclick="cancelCreateFolder()">Avbryt</button>`;
+      <button onclick="cancelCreate()">Avbryt</button>`;
    }
    if (model.state.newFile.active) {
       return `
       <button onclick="newFile()">Ny fil</button><br/>
-      <input type="text"></input><br/>
+      <input oninput="model.state.newContent = this.value" type="text"></input><br/>
       <button onclick="createFile()">Lagre</button>
-      <button onclick="cancelCreateFile()">Avbryt</button>`;
+      <button onclick="cancelCreate()">Avbryt</button>`;
    } else
       return `
       <button onclick="newFolder()">Ny mappe</button>
       <button onclick="newFile()">Ny fil</button>
    `;
 }
+
+function createFolder() {
+   const currentId = model.app.currentId;
+   const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
+   model.state.newContent = currentFile.content;
+   select(currentFile.parentId);
+}
+
+function createFile() {
+
+}
+
+function cancelCreate() {
+   model.state.newContent = ""
+   model.state.newFile.active = false;
+   model.state.newFolder.active = false;
+   updateView()
+}
+
 
 function newFolder() {
    model.state.newFolder.active = !model.state.newFolder.active;
