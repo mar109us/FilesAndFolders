@@ -1,11 +1,51 @@
 function updateView() {
-   document.getElementById("app").innerHTML = /*HTML*/ `
+   document.getElementById("app").innerHTML = `
         <h1>Filer og mapper</h1>
         Du er her: ${createSummarySelected()}<br/>
+        ${actions()}<br/>
         ${createFoldersHtml()}
         ${createFilesHtml()}
         ${createEditFileHtml()}
     `;
+}
+
+function actions() {
+   return `
+      ${editField()}
+   `;
+}
+
+function editField() {
+   if (model.state.newFolder.active) {
+      return `
+      <button onclick="newFolder()">Ny mappe</button><br/>
+      <input type="text"></input><br/>
+      <button onclick="createFolder()">Lagre</button>
+      <button onclick="cancelCreateFolder()">Avbryt</button>`;
+   }
+   if (model.state.newFile.active) {
+      return `
+      <button onclick="newFile()">Ny fil</button><br/>
+      <input type="text"></input><br/>
+      <button onclick="createFile()">Lagre</button>
+      <button onclick="cancelCreateFile()">Avbryt</button>`;
+   } else
+      return `
+      <button onclick="newFolder()">Ny mappe</button>
+      <button onclick="newFile()">Ny fil</button>
+   `;
+}
+
+function newFolder() {
+   model.state.newFolder.active = !model.state.newFolder.active;
+   model.state.newFile.active = false;
+   updateView();
+}
+
+function newFile() {
+   model.state.newFile.active = !model.state.newFile.active;
+   model.state.newFolder.active = false;
+   updateView();
 }
 
 function createSummarySelected() {
