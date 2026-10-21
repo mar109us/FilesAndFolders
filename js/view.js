@@ -67,12 +67,12 @@ function saveFile() {
    const currentId = model.app.currentId;
    const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
    currentFile.content = model.state.newContent;
-   updateView()
+   select(currentFile.parentId);
 }
 
 function cancelEdit() {
    const currentId = model.app.currentId;
    const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
    model.state.newContent = currentFile.content;
-   updateView()
+   select(currentFile.parentId);
 }
