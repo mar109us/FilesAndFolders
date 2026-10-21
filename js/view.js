@@ -2,7 +2,8 @@ function updateView() {
    document.getElementById("app").innerHTML = `
         <h1>Filer og mapper</h1>
         Du er her: ${createSummarySelected()}<br/>
-        ${actions()}<br/>
+        ${actions()}
+        ${deleteFolder()}<br/>
         ${createFoldersHtml()}
         ${createFilesHtml()}
         ${createEditFileHtml()}
@@ -168,8 +169,34 @@ function deleteFile() {
 }
 
 function deleteFolder() {
-   const currentId = model.app.currentId;
+   let currentId = model.app.currentId;
+   const currentFileOrFolder = model.filesAndFolders.find((f) => f.id == currentId);
+   if (currentFileOrFolder != null) {
+      return `<button onclick="doDeleteFolder()">Slett mappe</button>`;
+   } else return ``;
+   // const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
+   // console.log(currentFile);
+   // const test = model.filesAndFolders.filter((item) => item !== currentFile);
+   // console.log(test);
+   // model.filesAndFolders = test;
+   // select(currentFile.parentId);
+}
+function doDeleteFolder() {
+   let currentId = model.app.currentId;
+   while (model.filesAndFolders.find((f) => f.parentId == currentId)) {
+      deleteChildrenFiles();
+   }
    const currentFile = model.filesAndFolders.find((f) => f.id == currentId);
+   console.log(currentFile);
+   const test = model.filesAndFolders.filter((item) => item !== currentFile);
+   console.log(test);
+   model.filesAndFolders = test;
+   select(currentFile.parentId);
+}
+
+function deleteChildrenFiles() {
+   const currentId = model.app.currentId;
+   const currentFile = model.filesAndFolders.find((f) => f.parentId == currentId);
    console.log(currentFile);
    const test = model.filesAndFolders.filter((item) => item !== currentFile);
    console.log(test);
